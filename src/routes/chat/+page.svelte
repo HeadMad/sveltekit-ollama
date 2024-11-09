@@ -35,14 +35,13 @@
     event.preventDefault();
     isSubmitted = true;
     messages.push({content: prompt, role: "user"});
-    // prompt = '';
+    prompt = '';
     const message = $state({content: '', role: 'assistant'});
     messages.push(message);
     msg.scrollTop = msg.scrollHeight;
     await Ollama().chat({
       messages,
       stream(chunk, abort) {
-        console.log(chunk);
         message.content += chunk.message.content;
         msg.scrollTop = msg.scrollHeight;
         if (aborter.signal.aborted) {

@@ -1,9 +1,11 @@
 export default function (node, max = Infinity) {
-  let valueLength = node.value.length;
   const min = node.rows;
   let rowsNum = (node.value.match(/\n/g)?.length ?? 0) + 1;
 
-  let height, padding, border = node.offsetHeight - node.clientHeight;
+  let height,
+    padding,
+    border = node.offsetHeight - node.clientHeight,
+    scrollHeight = node.scrollHeight;
 
   const size = { [min]: node.offsetHeight };
   node.style.height = size[min] + 'px';
@@ -29,23 +31,23 @@ export default function (node, max = Infinity) {
   };
 
   const handleCheck = (event) => {
-    if (event.key === "Enter" || (valueLength - node.value.length) !== 0) {
-      let newRowsNum = Math.max(min, Math.min(max, (node.value.match(/\n/g)?.length ?? 0) + 1))
+    if (scrollHeight === node.scrollHeight)
+      return;
 
-      if (rowsNum !== newRowsNum)
-        setNodeParams(newRowsNum);
+    let newRowsNum = Math.max(min, Math.min(max, (node.value.match(/\n/g)?.length ?? 0) + 1))
 
-      node.scrollTop = node.scrollHeight;
-    }
+    if (rowsNum !== newRowsNum)
+      setNodeParams(newRowsNum);
 
-    valueLength = node.value.length;
+    node.scrollTop = node.scrollHeight;
+
+    scrollHeight = node.scrollHeight;
   };
 
   node.addEventListener('keyup', handleCheck);
   if (form) {
     formReset = () => {
       setNodeParams(min);
-      valueLength = 0;
     };
     form.addEventListener('reset', formReset);
   }
